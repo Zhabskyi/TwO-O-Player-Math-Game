@@ -3,9 +3,13 @@ require './player'
 
 
 class Game
-  # @@turn = 1
 
-  def self.score_check(p1, p2)
+  def initialize(player1, player2)
+    @p1 = Player.new(player1)
+    @p2 = Player.new(player2)
+  end
+
+  def score_check(p1, p2)
     if p1.score_show.to_i == 0 && p2.score_show.to_i == 0
       puts "It's a draw. Have to start game again"
     elsif p2.score_show.to_i == 0
@@ -15,7 +19,7 @@ class Game
     end
   end
 
-  def self.answers (answer, q, p1, p2)
+  def answers (answer, q, p1, p2)
     if answer.to_i == q.right_answer.to_i
       puts "Yes! You are correct."
       puts "Player #{p1.name}: #{p1.score_show}/3 vs  Player #{p2.name}: #{p2.score_show}/3"
@@ -28,29 +32,29 @@ class Game
     end
   end
 
-  p1 = Player.new('1')
-  p2 = Player.new('2')
+  def play
+    while @p1.score_show.to_i != 0 && @p2.score_show.to_i != 0
+      @@turn = 1
+      q = Question.new
 
-  while p1.score_show.to_i != 0 && p2.score_show.to_i != 0
-    @@turn = 1
-    q = Question.new
+      puts "Player #{@p1.name}: #{q.ask}"
+      answer = gets.chomp
+      answers(answer, q, @p1, @p2)
+      #Another player turn
 
-    puts "Player #{p1.name}: #{q.ask}"
-    answer = gets.chomp
-    self.answers(answer, q, p1, p2)
-    #Another player turn
-
-    @@turn = 2
-    q = Question.new
-    puts "Player #{p2.name}: #{q.ask}"
-    answer = gets.chomp
-    self.answers(answer, q, p1, p2) 
-    
-    #Check the score
-    self.score_check(p1, p2)
-
+      @@turn = 2
+      q = Question.new
+      puts "Player #{@p2.name}: #{q.ask}"
+      answer = gets.chomp
+      answers(answer, q, @p1, @p2) 
+      
+      #Check the score
+      score_check(@p1, @p2)
+    end
   end
 
 end
 
-game = Game.new
+game = Game.new('1', '2')
+
+game.play
